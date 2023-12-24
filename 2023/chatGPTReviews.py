@@ -58,7 +58,7 @@ def create_prompt(code_snippet: str) -> Dict[str, str]:
     metrics = ["code quality", "bugs"]
     return {
         metric: (
-            f"I want to review this part of the code for {metric}.\n\n"
+            f"I want to review this part of the code for {metric}.\n\n"\
             f"{code_snippet}"
         ) for metric in metrics
     }
@@ -69,7 +69,9 @@ def query_chatgpt(client: OpenAI, query: str) -> Optional[str]:
     Queries the OpenAI ChatGPT model and returns the response.
     """
     try:
-        completion = client.chat.completions.create(messages=[{"role": "user", "content": query}], model="gpt-4")
+        completion = client.chat.completions.create(
+                            messages=[{"role": "user", "content": query}], 
+                            model="gpt-4")
         return completion.choices[0].message.content
     except Exception as e:
         # Logging the error from API call
@@ -87,7 +89,7 @@ for code_snippet in code_snippets.values():
     prompt = create_prompt(code_snippet)["code quality"]
     response = query_chatgpt(openai_client, prompt)
     grade_query = f"Grade the code snippet on a scale of 1 to 10 for code quality. "\
-                  f"1 being the lowest and 10 being the highest.\n\n{code_snippet}"
+                  f"1 being the lowest and 10 being the highest. Just number pls. \n\n{code_snippet}"
     grade_response = query_chatgpt(openai_client, grade_query)
     code_grades.append(grade_response)
 
